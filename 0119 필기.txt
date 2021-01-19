@@ -1,0 +1,5 @@
+01.19 필기 [ Android Studio 환경 구축 ]
+
+ - JavaFX 처럼 디자인(FXML = XML)과 논리(Java = Activity)를 구분
+ - 경로가 OS별로 상이한점을 보완하기위해 C:\ 같은것을 사용x
+ - 

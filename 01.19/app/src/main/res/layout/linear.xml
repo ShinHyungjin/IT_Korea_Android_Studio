@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#aaffdd00"
+    >
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="하이요" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/american"
+        />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="여기에 텍스트 입력"
+        />
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:hint="연락처 입력"
+        />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Switch" />
+
+</LinearLayout>
