@@ -1,37 +1,24 @@
 package com.koreait.boardapp;
 
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BoardAdapter extends BaseAdapter {
     String TAG = this.getClass().getName();
-    List<String> data = new ArrayList<String>();
+    List<Board> data = new ArrayList<Board>();
     MainActivity mainActivity;
     View view;
     LayoutInflater layoutInflater;
 
     public BoardAdapter(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        data.add("사과");
-        data.add("바나나");
-        data.add("딸기");
-        data.add("수박");
-        data.add("파인애플");
-        data.add("멜론");
-        data.add("오렌지");
-        data.add("귤");
-        data.add("키위");
     }
 
     @Override
@@ -57,13 +44,24 @@ public class BoardAdapter extends BaseAdapter {
             layoutInflater = mainActivity.getLayoutInflater();
             View parentView = layoutInflater.inflate(R.layout.board_item, parent, false);
 
+            Log.d(TAG, "data "+position+"번째 : " + data.get(position).getBoard_id());
             Log.d(TAG,"parentView : " + parentView);
+
             view = parentView;
+
         } else {
             view = convertView;
         }
+        ViewGroup linear = (ViewGroup)view;
+        ViewGroup linear2 = (ViewGroup)linear.getChildAt(1);
 
-        //Log.d(TAG, position + " : " + convertView);
+        TextView t_title = (TextView) linear2.getChildAt(0);
+        TextView t_writer = (TextView) linear2.getChildAt(1);
+
+        t_title.setText(data.get(position).getTitle());
+        t_writer.setText(data.get(position).getWriter());
+
+        Log.d(TAG, position + " : " + convertView);
         //Log.d(TAG,position+"번째 아이템 " + view);
         return view;
     }

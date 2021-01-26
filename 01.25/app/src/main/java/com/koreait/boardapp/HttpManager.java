@@ -4,8 +4,16 @@ package com.koreait.boardapp;
 */
 
 import android.os.Bundle;
+
+import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -15,32 +23,43 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-public class HttpThread extends Thread{
+public class HttpManager {
     String TAG=this.getClass().getName();
     URL url;
     HttpURLConnection con; //http통신을 위한 객체(헤더+바디를 구성하여 서버와 데이터를 주고받는
     // stateless 한 통신)
-
-    String requestUrl;
-    String data;
+    Handler handler;
     MainActivity mainActivity;
-
+    ArrayList<Board> boardList;
 
     //이 객체를 생성하는 者는 주소와 제이슨 데이터를넘겨야 한다
-    public HttpThread(MainActivity mainActivity, String requestUrl, String data){
-        this.requestUrl=requestUrl;
-        this.data=data;
+    public HttpManager(MainActivity mainActivity){
         this.mainActivity = mainActivity;
+        handler = new Handler() {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                Log.d(TAG,"메인 가기 전");
+                Bundle bundle = msg.getData();
+                List<Board> boardList2 = (List)bundle.getSerializable("boardList");
+
+                mainActivity.adapter.data = boardList2;
+                mainActivity.adapter.notifyDataSetChanged();
+            }
+        };
+
     }
 
-    public int requestByGet(){ //Get방식으로 요청을 시도하는 메서드
+    public int requestByGet(String requestUrl){ //Get방식으로 요청을 시도하는 메서드
         BufferedReader buffr=null;
         int code=0;
         try{
             url = new URL(requestUrl);//요청 주소
             con=(HttpURLConnection)url.openConnection();
             con.setRequestMethod("GET");
+            Log.d(TAG,"접속성공!");
 
             //서버로부터 응답 데이터 가져오기
             buffr=new BufferedReader(new InputStreamReader(con.getInputStream())); //바이트 기반 기반 스트림
@@ -55,14 +74,31 @@ public class HttpThread extends Thread{
             Log.d(TAG,"서버가 보낸 응답데이터는 : "+sb.toString());
 
             code=con.getResponseCode(); //서버로부터 받은 응답코드 반환 ( 이 시점에 이미 서버에 요청을 완료 후 응답도 받은 상태)
-            //Log.d(TAG,"서버로부터 받은 응답코드는 "+code);
+            Log.d(TAG,"서버로부터 받은 응답코드는 "+code);
+            boardList = new ArrayList<Board>();
+
+            try {
+                JSONArray jsonArray = new JSONArray(sb.toString());
+                for(int i=0; i<jsonArray.length(); i++) {
+                    JSONObject json = (JSONObject) jsonArray.get(i);
+                    Board board = new Board();
+                    board.setBoard_id(json.getInt("board_id"));
+                    board.setTitle(json.getString("title"));
+                    board.setWriter(json.getString("writer"));
+                    board.setContent(json.getString("content"));
+                    board.setHit(json.getInt("hit"));
+                    boardList.add(board);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
             Message message = new Message();
             Bundle bundle = new Bundle();
-            bundle.putString("data",sb.toString());
+            //bundle.putParcelable("boardList",(Parcelable)boardList);
+            bundle.putSerializable("boardList", boardList);
             message.setData(bundle);
-
-            mainActivity.handler.sendMessage(message);
+            handler.sendMessage(message);
 
         }catch(MalformedURLException e){
             e.printStackTrace();
@@ -80,7 +116,7 @@ public class HttpThread extends Thread{
     }
 
     //Post방식의 요청을 시도하되, JSON데이터를 전송하겠다!!!
-    public int requestByPost(){
+    public int requestByPost(String requestUrl, String data){
         BufferedWriter buffw=null; //버퍼처리된 문자기반 스트림
         int code=0; //서버의 응답 코드
 
@@ -125,11 +161,4 @@ public class HttpThread extends Thread{
         return code; //응답코드 반환
     }
 
-    @Override
-    public void run() {
-        //int code=requestByPost();
-        //Log.d(TAG, "서버로부터 받은 응답코드는 "+code);
-        int code = requestByGet();
-        Log.d(TAG,"서버로부터 받은 응답코드는 "+code);
-    }
 }

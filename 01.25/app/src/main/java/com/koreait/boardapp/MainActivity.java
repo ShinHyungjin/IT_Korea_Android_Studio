@@ -15,12 +15,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    HttpManager httpManager;
     Handler handler;
+    ListView listView;
+    BoardAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        httpManager = new HttpManager(this);
 
         handler = new Handler() {
             @Override
@@ -31,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
         };
 
 
-        ListView listView = this.findViewById(R.id.listView);
+        listView = this.findViewById(R.id.listView);
 
-        BoardAdapter adapter = new BoardAdapter(this);
+        adapter = new BoardAdapter(this);
         listView.setAdapter(adapter);
 
         //ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, data);
@@ -42,5 +47,14 @@ public class MainActivity extends AppCompatActivity {
     }
     public void regist(View view) {
 
+    }
+    public void getList(View view) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                httpManager.requestByGet("http://192.168.35.161:8888/rest/board");
+            }
+        };
+        thread.start();
     }
 }
