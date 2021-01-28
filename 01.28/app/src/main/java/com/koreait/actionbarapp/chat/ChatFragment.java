@@ -88,7 +88,7 @@ public class ChatFragment extends Fragment {
         Thread thread = new Thread() {
             @Override
             public void run() {
-
+                chatThread.send(t_input.getText().toString());
             }
         };
         thread.start();
