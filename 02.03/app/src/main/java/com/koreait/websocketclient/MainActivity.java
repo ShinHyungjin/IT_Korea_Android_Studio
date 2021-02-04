@@ -10,6 +10,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.net.URI;
@@ -25,11 +26,15 @@ public class MainActivity extends AppCompatActivity {
     BoardAdapter boardAdapter;
     Handler handler;
     DetailDialog detailDialog;
+    RegistDialog registDialog;
+    Button bt_regist;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        bt_regist = findViewById(R.id.bt_regist);
         listView = findViewById(R.id.listView);
+
         boardAdapter  = new BoardAdapter(this);
         listView.setAdapter(boardAdapter); //리스트뷰와 어댑터 연결!!!
 
@@ -95,6 +100,11 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
+    }
+    public void regist(View view) {
+        registDialog = new RegistDialog(this);
+        registDialog.show();
+
     }
 }
 

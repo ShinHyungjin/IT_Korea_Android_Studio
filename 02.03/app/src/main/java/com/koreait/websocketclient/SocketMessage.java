@@ -1,10 +1,10 @@
 package com.koreait.websocketclient;
 
 public class SocketMessage {
-    private String requestCode;
-    private int resultCode;
-    private String msg;
-    private String data;
+    String requestCode;
+    int resultCode;
+    String msg;
+    String data;
 
     public String getRequestCode() {
         return requestCode;
