@@ -42,7 +42,7 @@ public class MyAsync extends AsyncTask<String, Void, String> {
             HttpURLConnection  con = (HttpURLConnection)url.openConnection();
             buffr  = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
             sb = new StringBuilder();
-            String data=null;
+            String data = null;
 
             while(true){
                 data = buffr.readLine();
